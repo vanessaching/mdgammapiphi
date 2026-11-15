@@ -1,281 +1,221 @@
-# Launch guide: Chapter Hub
+# Maryland Gamma Chapter Hub: setup guide
 
-Step by step, no coding needed. Plan on about **2 hours**, in one sitting if you can.
+Everything is click-by-click, with no coding. Work through it in order; you can stop between parts.
 
-**What it costs:** the domain is about $10–20 a year. Everything else starts on a free plan:
-GitHub, Supabase, Vercel, Resend, Google Cloud.
+- **Part 1 — Launch (free):** about 1 hour. The site goes live at a free address like
+  `mdgammapiphi.vercel.app`, and invite/password emails come from a chapter Gmail.
+- **Part 2 — Your own domain (later):** about 30 minutes plus the domain cost (around $10–20 a
+  year). This moves the site to your own address and turns on approval/task emails.
 
-**You'll create accounts at:** GitHub, Supabase, Vercel, Resend, Google Cloud.
-Use an email the chapter will keep (for example a shared `tech@` or president's address you'll
-hand down), not a personal school email that disappears when you graduate.
+**Already done ✅:** the code is on GitHub ([vanessaching/mdgammapiphi](https://github.com/vanessaching/mdgammapiphi)),
+the Supabase project is created, the database is built, and the Security Advisor check passed.
 
-> 🔐 **Before anything else:** turn on **two-factor authentication (2FA)** on every one of these
-> accounts as you create them. Use an authenticator app, not SMS. These accounts control the
-> whole site, so they're the most important thing to protect.
-
-Keep a private note (a password manager is best) to collect the values marked **📋 save this**.
-Never paste the secret ones into chats, emails or group chats.
-
----
-
-## Step 1 — Put the code on GitHub
-
-1. Sign in at **github.com** and turn on 2FA (Settings → Password and authentication).
-2. Click **+ → New repository**. Name: `chapter-hub`. Choose **Private**. Don't add a README.
-   Click **Create repository**.
-3. Get the code into it, either way:
-   - **Easiest:** send Claude the repo name (`yourname/chapter-hub`) and it pushes the code for you.
-   - **Yourself:** unzip `chapter-hub.zip`. On the empty repo page click **uploading an existing file**,
-     drag in everything inside the unzipped folder (including the `.github` and `supabase` folders),
-     and click **Commit changes**.
-4. In the repo, open **Settings → Code security** and turn on **Dependabot alerts** and
-   **Dependabot security updates**. GitHub will then warn you about security fixes for the code's building blocks.
+> 🔐 **Rules for every account below:** turn on **2-step verification** (use an authenticator app,
+> not texts). Save passwords and keys in a **password manager**. **Never** paste a secret key into a
+> chat, email, group chat, or screenshot, including to Claude.
+>
+> **📋 = save this in your password manager.** **🔒 = secret.**
 
 ---
 
-## Step 2 — Buy your domain
+# PART 1 — Launch (free)
 
-**Easiest: buy it inside Vercel**, because Vercel then sets up the web address and HTTPS for you
-automatically. (Cloudflare Registrar is a little cheaper but needs extra DNS steps.)
+## 1. GitHub security (1 minute)
+In the repo: **Settings → Code security** → turn on **Dependabot alerts** and **Dependabot
+security updates**. GitHub will then tell you when the site's building blocks need a security fix.
 
-1. Pick a name. Common patterns: `[school]piphi.com`, `piphi[school].org`, `[chapter]piphi.org`.
-   - ⚠️ Pi Beta Phi Headquarters has rules about using its name and logos online. Ask your
-     chapter advisor or check the brand guidelines before buying a name with "Pi Beta Phi" or
-     "Pi Phi" in it.
-2. You'll buy it in Step 7 (Vercel → **Domains → Buy**). Just decide on the name now and
-   check it's available.
-3. After buying: make sure **auto-renew** is on, and **WHOIS privacy** is on (Vercel
-   and Cloudflare include it). If the domain expires, the site and its emails go down.
+## 2. Supabase keys and sign-in settings
+*(You already created the project and ran the database file.)*
 
----
+**2a. Copy your keys.** In Supabase, open **Project Settings → API Keys** and save these:
+- **Project URL**, like `https://xxxx.supabase.co` 📋
+- **anon / publishable key** 📋 (safe to be public)
+- **service_role / secret key** 📋🔒 (this one bypasses all security; it only ever goes into Vercel)
 
-## Step 3 — Set up Supabase (accounts, database, file storage)
+**2b. Lock down sign-in.** Go to **Authentication → Sign In / Providers**:
+- Turn **off** "Allow new users to sign up". Only invited people can have accounts.
+- Under **Email**: keep **Confirm email** on, turn on **Secure email change**, set
+  **Minimum password length** to **10**, and set **Password requirements** to
+  *lowercase, uppercase letters and digits*.
+- Turn **off** any providers you don't use (phone, anonymous, etc.).
 
-### 3a. Create the project
-1. Go to **supabase.com** → sign up (turn on 2FA in Account → Security).
-2. **New project.** Name `chapter-hub`. Click **Generate a password** and **📋 save it**.
-   Pick the **region closest to your school**: **East US (North Virginia)** for Baltimore.
-3. Wait about 2 minutes for it to finish.
+## 3. Email sender: chapter Gmail (about 10 minutes)
+Supabase's built-in email only reaches your Supabase team, sends about 2 emails an hour, and on new
+free projects its templates can't be edited. Connecting your own sender fixes all three.
 
-### 3b. Create the tables and security rules
-1. Left sidebar → **SQL Editor** → **New query**.
-2. Open the file `supabase/migrations/20261115000000_init.sql` from the code, copy **all** of it,
-   paste it in, and click **Run**. You should see "Success. No rows returned."
-3. Check: **Table Editor** should list `profiles`, `events`, `excusals`, `tasks`, etc., and
-   **Storage** should show a bucket named `excusal-proofs` marked **Private**.
+1. Use a **dedicated chapter Gmail** (e.g. `mdgammapiphi.hub@gmail.com`), not a personal one, so
+   it can be passed down to future officers. Create one if needed.
+2. On that Google account, turn on **2-Step Verification** (myaccount.google.com → Security).
+3. Go to **myaccount.google.com/apppasswords** → name it `Supabase` → **Create**. Copy the
+   16-character code. 📋🔒
+4. In Supabase, open **Authentication → Emails → SMTP Settings** → turn on **Custom SMTP**:
 
-### 3c. Copy your keys
-**Project Settings → API Keys** (and **Data API** for the URL):
-- **Project URL** (`https://xxxx.supabase.co`) → 📋 save this
-- **anon / publishable key** → 📋 save this (this one is safe to be public)
-- **service_role / secret key** → 📋 save this **(SECRET: it bypasses all security. It only ever goes into Vercel.)**
+   | Field | Value |
+   |---|---|
+   | Sender email | your chapter Gmail address |
+   | Sender name | `Pi Beta Phi Maryland Gamma` |
+   | Host | `smtp.gmail.com` |
+   | Port | `465` |
+   | Username | your chapter Gmail address |
+   | Password | the 16-character app password |
 
-### 3d. Lock down sign-in
-Go to **Authentication** in the sidebar:
-1. **Sign In / Providers**
-   - Turn **off** "Allow new users to sign up". Only people exec invites can have accounts.
-     The database also enforces this, so it's a second lock.
-   - Under **Email**: keep "Confirm email" **on**, turn **Secure email change** **on**,
-     set **Minimum password length** to **10**, and set **Password requirements** to
-     *lowercase, uppercase letters and digits*.
-   - Turn **off** any providers you don't use (phone, anonymous sign-ins, etc.).
-2. **URL Configuration:** you'll fill this in at Step 8, after you have your domain.
-3. **Emails → Templates:** update three templates. For each one, set the subject, delete what's in
-   the body, and paste the matching file from `supabase/templates/`:
+   Click **Save**.
+5. **Authentication → Rate Limits**: set "emails sent per hour" to about **30**.
+6. **Authentication → Emails → Templates**. These should be editable now. For each of the three,
+   set the subject, delete the existing body, and paste the matching file from the repo's
+   [`supabase/templates`](https://github.com/vanessaching/mdgammapiphi/tree/main/supabase/templates)
+   folder (open the file on GitHub → **copy raw file** button):
 
-   | Template | Subject | Paste file |
+   | Template | Subject | File |
    |---|---|---|
    | Invite user | `You're invited to Chapter Hub` | `invite.html` |
    | Magic Link | `Your Chapter Hub sign-in link` | `magic_link.html` |
    | Reset Password | `Reset your Chapter Hub password` | `recovery.html` |
 
-   These send people through the site's secure sign-in page. Without them, invite links won't work.
-4. **Emails → SMTP Settings:** you'll fill this in at Step 4 (Supabase's built-in email only
-   sends a handful per hour, which is not enough to invite a chapter).
+   ⚠️ This step matters: without these templates, invite links won't sign people in.
 
-### 3e. Run the security check
-Sidebar → **Advisors → Security Advisor** → **Rerun linter**. You should see **no errors**.
-A warning about "leaked password protection" is expected on the free plan: that feature is part
-of the paid plan.
-
----
-
-## Step 4 — Set up email (Resend)
-
-1. **resend.com** → sign up, turn on 2FA.
-2. **Domains → Add domain** → enter your domain (from Step 2). Resend shows 3–4 **DNS
-   records** (TXT/MX). Leave this tab open. You'll add them at Step 7 once the domain is
-   bought, then come back and click **Verify**.
-3. **API Keys → Create API key**. Name `chapter-hub`, permission **Sending access**, and
-   limit it to your domain. **📋 save this (SECRET)**.
-4. Back in **Supabase → Authentication → Emails → SMTP Settings**, turn on **Custom SMTP**:
-   - Sender email: `hub@yourdomain.com`   · Sender name: `Pi Beta Phi Chapter Hub`
-   - Host: `smtp.resend.com`   · Port: `465`
-   - Username: `resend`   · Password: *your Resend API key*
-   - Save. Then in **Authentication → Rate Limits**, raise "emails sent per hour" (e.g. to 100).
-5. Note: Resend's free plan has a daily sending cap (check their current limit). If you're
-   inviting a big chapter, invite in batches across a couple of days.
-
----
-
-## Step 5 — Connect the Google Calendar
-
-The calendar ID is already filled in for you:
-`fb9fb41dcb988c312d97fde66e23dc1669ff686a33f597a0700a7e315b0a2071@group.calendar.google.com`
-
-✅ **Your calendar is public**, so you only need an API key:
-1. **console.cloud.google.com** → create a project `chapter-hub`.
+## 4. Google Calendar key (about 5 minutes)
+Your calendar is public, so all you need is an API key.
+1. **console.cloud.google.com** → create a project `mdgamma-hub`.
 2. **APIs & Services → Library** → search **Google Calendar API** → **Enable**.
-3. **APIs & Services → Credentials → Create credentials → API key**. Then **Edit** the key and,
-   under **API restrictions**, choose **Restrict key → Google Calendar API**. Save.
-   **📋 save the key (SECRET)**. This goes in `GOOGLE_API_KEY` in Step 7.
+3. **APIs & Services → Credentials → Create credentials → API key.**
+4. Click **Edit** on the key → **API restrictions → Restrict key → Google Calendar API** → **Save**.
+   📋🔒
 
-<details><summary>Only if the calendar is ever made private</summary>
+## 5. Cron secret
+Use your password manager to generate a **random password of 40+ letters and numbers**. 📋🔒
+It lets the automatic calendar sync prove it's allowed to run.
 
-1. Same project, enable the Google Calendar API (steps 1–2 above).
-2. **IAM & Admin → Service Accounts → Create**. Name `calendar-reader`, with no roles.
-3. Open it → **Keys → Add key → JSON**. A file downloads. **📋 save it (SECRET)**.
-4. Copy the service account's email (`calendar-reader@…iam.gserviceaccount.com`).
-   In Google Calendar → the chapter calendar's **Settings and sharing → Share with specific
-   people** → add that email with **"See all event details"**.
-5. In Vercel, put the JSON file contents in `GOOGLE_SERVICE_ACCOUNT_JSON` and delete `GOOGLE_API_KEY`.
-</details>
-
----
-
-## Step 6 — Make a cron secret
-
-This is a random password that lets the hourly calendar sync prove it's allowed to run. Use your
-password manager's generator to make a **random 40+ character** string (letters and numbers).
-**📋 save it (SECRET)**.
-
----
-
-## Step 7 — Publish on Vercel
-
-1. **vercel.com** → **Sign up with GitHub**, turn on 2FA.
-2. **Add New → Project** → choose `chapter-hub` → **Import**.
-3. Before clicking Deploy, open **Environment Variables** and add each of these. For the
-   secret ones, tick **Sensitive**, and set the environment to **Production** only:
+## 6. Publish on Vercel (about 10 minutes)
+1. **vercel.com** → **Sign up with GitHub** → turn on 2FA (Account Settings → Authentication).
+2. **Add New → Project** → pick `mdgammapiphi` → **Import**.
+3. Open **Environment Variables** and add these. Tick **Sensitive** on the 🔒 ones:
 
    | Name | Value |
    |---|---|
    | `NEXT_PUBLIC_SUPABASE_URL` | Supabase Project URL |
    | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon/publishable key |
    | `SUPABASE_SERVICE_ROLE_KEY` 🔒 | Supabase service_role/secret key |
-   | `NEXT_PUBLIC_SITE_URL` | `https://yourdomain.com` (your real domain, no trailing slash) |
+   | `NEXT_PUBLIC_SITE_URL` | `https://mdgammapiphi.vercel.app` (fix in step 5 below if different) |
    | `NEXT_PUBLIC_CHAPTER_NAME` | `Pi Beta Phi Maryland Gamma` |
-   | `NEXT_PUBLIC_CHAPTER_TIMEZONE` | `America/New_York` (Baltimore, Eastern time) |
-   | `GOOGLE_CALENDAR_ID` | the calendar ID above |
-   | `GOOGLE_API_KEY` 🔒 | your Google key from Step 5 |
-   | `RESEND_API_KEY` 🔒 | Resend API key |
-   | `EMAIL_FROM` | `Pi Beta Phi Chapter Hub <hub@yourdomain.com>` |
-   | `CRON_SECRET` 🔒 | your cron secret from Step 6 |
+   | `NEXT_PUBLIC_CHAPTER_TIMEZONE` | `America/New_York` |
+   | `GOOGLE_CALENDAR_ID` | `fb9fb41dcb988c312d97fde66e23dc1669ff686a33f597a0700a7e315b0a2071@group.calendar.google.com` |
+   | `GOOGLE_API_KEY` 🔒 | your Google key from step 4 |
+   | `CRON_SECRET` 🔒 | your cron secret from step 5 |
 
-4. Click **Deploy**. In about 2 minutes you get a `chapter-hub-xxxx.vercel.app` link.
-5. **Buy and connect the domain:** Project → **Settings → Domains** → **Buy** (or **Add** if
-   you bought it elsewhere). Add both `yourdomain.com` and `www.yourdomain.com`, and set
-   `www` to **redirect** to `yourdomain.com`. HTTPS turns on automatically.
-6. **Add the Resend email records:** Vercel dashboard → **Domains** → your domain → **DNS Records**.
-   Add each record Resend showed you (copy Type, Name and Value exactly). Also add a DMARC record:
-   Type `TXT`, Name `_dmarc`, Value `v=DMARC1; p=none; rua=mailto:hub@yourdomain.com`.
-   Then go back to Resend → **Verify**. It can take a few minutes up to a few hours.
-7. **Security settings:** Project → **Settings → Deployment Protection**: make sure
-   **Vercel Authentication** is on for **Preview** deployments. Preview links (made for
-   test versions) can then only be opened by your Vercel team.
+   *(Leave out `RESEND_API_KEY` and `EMAIL_FROM` until Part 2.)*
+4. Click **Deploy** and wait about 2 minutes.
+5. **Check the address:** **Settings → Domains** shows your real `.vercel.app` address. If it's
+   not exactly `mdgammapiphi.vercel.app`, change `NEXT_PUBLIC_SITE_URL` to match, then
+   **Deployments → ⋯ (latest) → Redeploy**.
+6. **Settings → Deployment Protection:** make sure **Vercel Authentication** is on for
+   **Preview**, so test versions of the site can only be opened by you.
 
----
+## 7. Point Supabase at the site
+In Supabase, open **Authentication → URL Configuration**:
+- **Site URL:** `https://mdgammapiphi.vercel.app` (your real address)
+- **Redirect URLs:** add `https://mdgammapiphi.vercel.app/auth/confirm`
 
-## Step 8 — Point Supabase at your domain
+## 8. Hourly calendar sync (2 minutes)
+Vercel's free plan syncs the calendar once a day; this makes it hourly.
+In the GitHub repo, open **Settings → Secrets and variables → Actions → New repository secret** and add two:
+- `SITE_URL` = `https://mdgammapiphi.vercel.app`
+- `CRON_SECRET` = the same cron secret from step 5
 
-**Supabase → Authentication → URL Configuration:**
-- **Site URL:** `https://yourdomain.com`
-- **Redirect URLs:** add `https://yourdomain.com/auth/confirm`. Remove any `localhost` entries.
+Test it: **Actions** tab → **Sync Google Calendar** → **Run workflow**. A ✅ means the sync worked.
 
----
+## 9. Create your account (the first one)
+You'll be **VP Operations**: you can invite everyone, assign positions (including President),
+approve excusals and take attendance.
+1. On GitHub, open [`supabase/setup/first-account.sql`](https://github.com/vanessaching/mdgammapiphi/blob/main/supabase/setup/first-account.sql)
+   and copy it. In **Supabase → SQL Editor → New query**, paste it, then replace **both**
+   `you@school.edu` with your email and `Your Full Name` with your name.
+2. Select **only the PART 1 lines** and click **Run**.
+3. Go to **Authentication → Users → Add user → Send invitation** and enter the same email.
+4. Back in the SQL Editor, select the **PART 2** lines plus the check below them and **Run**. You
+   should see yourself as *Vice President Operations*.
+5. Open the invite email, click the link, and set your password. You're in. 🎉
 
-## Step 9 — Hourly calendar sync (GitHub)
+## 10. Bring in exec, then the chapter
+1. **Members → Invite a member:** invite the **President**. Once she has signed in, use
+   **Assign a position → Chapter President** next to her name. *(Set her up early: she's the one
+   who approves your own excusals.)*
+2. Invite the rest of exec and give each their position. Any exec member can invite and
+   assign positions, including their own.
+3. Invite general members. Gmail allows a few hundred emails a day, so for a big chapter, spread
+   invites over a day or two.
 
-Vercel's free plan syncs the calendar **once a day**. A free GitHub Action is included that syncs **every
-hour**:
-GitHub repo → **Settings → Secrets and variables → Actions → New repository secret**:
-- `SITE_URL` = `https://yourdomain.com`
-- `CRON_SECRET` = the same cron secret from Step 6
+## 11. Launch test (10 minutes, on phone and laptop)
+- [ ] The site loads with the 🔒 padlock and shows the Pi Phi login screen
+- [ ] Invite a second email you own. The email arrives (check spam), the link works, and you can set a password
+- [ ] As that member: open an event and submit an excusal **with a photo**
+- [ ] As yourself (VPO): **Review Excusals** → **View proof** → **Approve**. The member sees the 🔔 notification
+- [ ] Take attendance on an event (check people off → **Save attendance**), then check the **80% View**
+- [ ] Assign that member a task; it shows on their calendar and **Tasks**
+- [ ] **Calendar** shows the real chapter events (or press **Sync now**)
+- [ ] **Deactivate** the test member. They're logged out and can't sign back in
 
-Test it: repo → **Actions → Sync Google Calendar → Run workflow**. A green check means the sync worked.
-(The VPO can also click **Sync now** on the Calendar page anytime.)
-
----
-
-## Step 10 — Create your account (the first one)
-
-You'll be the first account, as **VP Operations**. That position can invite everyone, assign
-positions (including Chapter President), approve excusals and take attendance.
-
-1. Open `supabase/setup/first-account.sql`. Replace **both** `you@school.edu` with your email
-   and `Your Full Name` with your name.
-2. **Supabase → SQL Editor:** paste and run only **PART 1**.
-3. **Authentication → Users → Add user → Send invitation** → enter the same email.
-4. **SQL Editor:** run **PART 2** (and the check below it). You should see yourself listed as
-   Vice President Operations.
-5. Open the email, click the link, and set your password.
-6. On the site's **Members** page, invite the President. Once she has signed in, use
-   **Assign a position → Chapter President** next to her name. Then invite the rest of exec and
-   give them their positions; they can help invite everyone else.
-
-> Rule to know: the VPO can't approve **her own** excusals; the President does. That's why the
-> President should be set up early.
-
-## Step 11 — Launch test (10 minutes)
-
-Do these on your phone **and** a laptop:
-- [ ] Visit `yourdomain.com`. It shows the login page with the 🔒 padlock, and `www.` redirects.
-- [ ] You sign in. **Members** page loads, and the President shows as Chapter President.
-- [ ] Invite a test email you own. The email arrives (check spam), the link works, and you can set a password.
-- [ ] As the test member: open an event, submit an excusal **with a photo**.
-- [ ] As VPO: **Review Excusals** → open the proof → approve. The test member gets the
-      notification **and** an email.
-- [ ] Take attendance on an event; check **80% View**.
-- [ ] Assign a task; it shows on the assignee's calendar.
-- [ ] Calendar shows real chapter events (or press **Sync now**).
-- [ ] Deactivate the test member. They're signed out and can't sign back in.
+**Part 1 is done. The site is live! 🎉**
 
 ---
 
-## Keeping it secure (do these every semester)
+# PART 2 — Your own domain (whenever you're ready)
 
-- **Officer transition:** new exec assigns positions and **removes old ones** from people who
-  stepped down. **Deactivate** members who graduated or left. Review the **audit log** on Members.
-- **Hand over the accounts:** make sure the next tech/exec person is added to the GitHub repo,
-  Vercel team, Supabase organization and Resend team, each with their own login and 2FA,
-  *before* the current owner graduates. Never share one login.
-- **Rotate secrets** if one might have leaked (someone pasted it somewhere, or a laptop was lost):
-  regenerate it in its service, update it in Vercel, and **redeploy**.
-- **Dependabot PRs:** when GitHub opens a security update, merge it (or ask Claude to). Vercel
-  redeploys automatically.
-- **Backups:** the Supabase free plan doesn't include downloadable backups. If losing attendance
-  history would be a big deal, the Pro plan (about $25/month) adds daily backups. Free projects also
-  **pause after a week of no activity**. The daily calendar sync counts as activity, but if the
-  site is ever "paused", press **Restore** in the Supabase dashboard.
+## 12. Buy the domain in Vercel
+1. Pick a name (e.g. `mdgammapiphi.org`). ⚠️ Pi Beta Phi HQ has rules about using its name
+   online, so check with your chapter advisor first.
+2. In the Vercel project, open **Settings → Domains → Buy**. Add both `yourdomain.org` and
+   `www.yourdomain.org`, and set `www` to **redirect** to `yourdomain.org`. HTTPS is automatic.
+3. Make sure **auto-renew** is on. If the domain expires, the site goes down.
 
-## Changing the domain later
+## 13. Email from your own domain (Resend)
+1. **resend.com** → sign up, turn on 2FA → **Domains → Add domain** → your domain.
+2. Resend shows several DNS records. In **Vercel → Domains → your domain → DNS Records**, add each
+   one exactly (Type, Name, Value). Also add **DMARC**: Type `TXT`, Name `_dmarc`, Value
+   `v=DMARC1; p=none; rua=mailto:hub@yourdomain.org`. Back in Resend, click **Verify**. It can
+   take from a few minutes to a few hours.
+3. In Resend, open **API Keys → Create**, give it **Sending access** only, for your domain. 📋🔒
+4. **Switch Supabase's sender:** **Authentication → Emails → SMTP Settings** → change to:
+   Sender `hub@yourdomain.org`, Host `smtp.resend.com`, Port `465`, Username `resend`,
+   Password = the Resend API key. Save. (Your templates stay as they are.)
 
-1. Vercel → **Settings → Domains** → add the new domain (and redirect the old one to it).
-2. Vercel → **Settings → Environment Variables** → change `NEXT_PUBLIC_SITE_URL` (and
-   `EMAIL_FROM` if the email domain changes) → **Deployments → ⋯ → Redeploy**.
-   *(Settings starting with `NEXT_PUBLIC_` only take effect after a redeploy.)*
-3. Supabase → **Authentication → URL Configuration** → update **Site URL** and **Redirect URLs**.
-4. Resend → add and verify the new domain if emails should come from it.
-5. GitHub → update the `SITE_URL` Actions secret.
+## 14. Move the site to the domain
+1. **Vercel → Settings → Environment Variables:**
+   - change `NEXT_PUBLIC_SITE_URL` to `https://yourdomain.org`
+   - add `RESEND_API_KEY` 🔒 = your Resend key (this turns on approval and task emails)
+   - add `EMAIL_FROM` = `Pi Beta Phi Maryland Gamma <hub@yourdomain.org>`
 
-## If something goes wrong
+   Then go to **Deployments → ⋯ → Redeploy** (settings only take effect after a redeploy).
+2. **Supabase → Authentication → URL Configuration:** set the Site URL to `https://yourdomain.org`, and
+   add `https://yourdomain.org/auth/confirm` to Redirect URLs (remove the old vercel.app one).
+3. **GitHub → Settings → Secrets → Actions:** update `SITE_URL` to `https://yourdomain.org`.
+4. Re-run the launch test (step 11) on the new address.
+
+---
+
+# Keeping it secure (every semester)
+
+- **Officer transition:** new exec assigns positions and **removes old ones**. **Deactivate**
+  graduates and members who left. Skim the **audit log** on the Members page.
+- **Hand over the accounts before you graduate:** add the next tech/exec person to the GitHub repo,
+  Vercel team, Supabase organization, Google Cloud project and (later) Resend, each with their **own
+  login and 2FA**. Never share one login. Also hand over the chapter Gmail.
+- **If a secret might have leaked** (pasted somewhere, lost laptop): create a new one in that
+  service, update it in Vercel, and **Redeploy**.
+- **Dependabot:** when GitHub opens a security update pull request, merge it (or ask Claude to).
+- **Backups:** the Supabase free plan has no downloadable backups. If losing attendance history
+  would be bad, Pro (about $25/month) adds daily backups. Free projects also **pause after a week of no
+  activity**. The calendar sync counts as activity, but if the project ever shows as paused,
+  press **Restore** in Supabase.
+
+# If something goes wrong
 
 | Problem | Fix |
 |---|---|
-| Invite link says "invalid or expired" | Links expire after 1 hour and work once. Re-send from Members. Check Step 3d templates and Step 8 URLs. |
-| Invite emails never arrive | Check spam. Check Resend → **Logs** and that the domain shows **Verified**. Check Supabase SMTP settings (Step 4). |
-| "Accounts are invite-only" when inviting | The invite must be sent from the site's **Members** page (or do Part 1 of Step 10 first). |
-| Calendar is empty | VPO → **Sync now**; read the error. Public calendar: check the API key restriction and that the calendar is public. Private: check it's shared with the service account email. |
-| Times are off by hours | Fix `NEXT_PUBLIC_CHAPTER_TIMEZONE` in Vercel, then redeploy. |
-| Proof upload fails | File must be a photo or PDF under 10 MB. |
-| Site shows an error page | Vercel → **Deployments** → latest → **Logs**. Send Claude the error text (never the keys). |
+| Invite link says "invalid or expired" | Links work once and expire after an hour, so re-send from **Members**. Check the step 3 templates and the step 7 URLs. Open the link in the same browser you'll use the site in. |
+| Invite email never arrives | Check spam. Check the Supabase SMTP settings (step 3). In Gmail, look at **Sent** for that account. |
+| "Accounts are invite-only" | Invite from the site's **Members** page (or for your first account, run PART 1 of step 9 first). |
+| Calendar is empty | VPO → **Calendar → Sync now** and read the message. Check `GOOGLE_API_KEY` is restricted to the *Calendar* API and that the Calendar API is enabled. |
+| Times are off by hours | `NEXT_PUBLIC_CHAPTER_TIMEZONE` should be `America/New_York`. Redeploy after changing it. |
+| Proof upload fails | It must be a photo or PDF under 10 MB. |
+| Site shows an error | **Vercel → Deployments → latest → Logs**. Send Claude the error text (never the keys). |

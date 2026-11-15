@@ -26,6 +26,9 @@
 
 :root { accent-color: var(--color-wine); }
 
+/* Default line color (tables, dividers, outlines) = brand light blue instead of black */
+*, ::before, ::after { border-color: var(--color-light-blue); }
+
 body {
   background: var(--color-page);
   color: var(--color-ink);
