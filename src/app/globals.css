@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/*
+ * Pi Beta Phi brand tokens (2025 brand transformation).
+ * Colors sampled from the official brand-kit assets (logos, patterns, crest).
+ * Everything brand-related lives here; every page picks it up automatically.
+ */
+@theme {
+  --color-wine: #9b3359;        /* primary: header, buttons, required events */
+  --color-berry-dark: #512a44;  /* headings, button hover */
+  --color-berry: #c64771;
+  --color-coral: #d05a57;
+  --color-pink-mid: #ffb3ab;
+  --color-pink-light: #f5dadf;  /* "Required" tags, soft fills */
+  --color-cream: #fff2e5;
+  --color-silver-blue: #b9d9eb; /* accents (never as text on white) */
+  --color-light-blue: #dbe2e9;  /* task tags, borders */
+  --color-navy: #01426a;        /* links, secondary buttons */
+  --color-gold: #b77729;
+  --color-ink: #3b4559;         /* body text */
+  --color-page: #fffaf5;        /* page background: a lighter cream */
+
+  --font-serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+:root { accent-color: var(--color-wine); }
+
+body {
+  background: var(--color-page);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  letter-spacing: 0.01em;
+}
+
+a { text-underline-offset: 3px; }
+
+:focus-visible {
+  outline: 2px solid var(--color-navy);
+  outline-offset: 2px;
+}
