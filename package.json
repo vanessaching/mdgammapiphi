@@ -1,0 +1,42 @@
+{
+  "name": "chapter-hub",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run tests/unit",
+    "test:db": "supabase db reset && vitest run tests/integration",
+    "db:start": "supabase start -x studio,imgproxy,vector,logflare,edge-runtime,realtime,supavisor,postgres-meta",
+    "test:e2e": "supabase db reset && node --env-file=.env.local scripts/seed-dev.mjs && node tests/e2e/flow.cjs"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.119.0",
+    "google-auth-library": "^11.3.4",
+    "next": "15.5.29",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.29",
+    "supabase": "^3.1.0",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "vitest": "^5.1.0"
+  },
+  "overrides": {
+    "postcss": "^8.5.33"
+  }
+}
